@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+
+{% if create %}
+	{% block title %} Create a new blog post 🚀 {% endblock %}
+{% else %}
+	{% block title %} Update an existing blog post 👴 {% endblock %}
+{% endif %}
+
+
+{% block content %}
+
+<div class='container p-4'>
+	{% if create %}
+		<h2>Create a new blog post 🚀</h2>
+	{% else %}
+		<h2>Update an existing blog post 👴</h2>
+	{% endif %}
+	<form class='form' method="POST">
+		{% csrf_token %}
+		{% for field in form %}
+			<div class="form__group">
+				<label>{{field.label}}</label>
+				<br/>
+				{{field}}
+				<br/></br/>
+			</div>
+		{% endfor %}
+		{% if create %}
+			<button class='btn btn-outline-success' type='submit'>+Create</button>
+		{% else %}
+			<button class='btn btn-outline-success' type='submit'>Update</button>
+		{% endif %}
+	</form>
+</div>
+
+
+{% endblock %}

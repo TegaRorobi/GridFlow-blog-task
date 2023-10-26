@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} List of blog posts {% endblock %}
+
+{% block content %}
+<div class='container p-4'>
+	<h1>Blog posts' list ✨</h1>
+
+	<ul>
+		{% for post in posts %}
+			<li>{{post.title}}</li>
+		{% endfor %}
+	</ul>
+</div>
+
+{% endblock %}
