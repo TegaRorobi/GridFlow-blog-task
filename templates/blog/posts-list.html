@@ -4,7 +4,11 @@
 
 {% block content %}
 <div class='container p-4'>
-	<h1>Blog posts' list ✨</h1>
+	{% if not searching %}
+		<h1>Blog posts' list ✨</h1>
+	{% else %}
+		<h1>Blog posts' search results ✨</h1>
+	{% endif %}
 
 	<ul>
 		{% for post in posts %}

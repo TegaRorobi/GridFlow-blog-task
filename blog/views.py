@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 from django.urls import reverse
 from django.contrib import messages
+from django.db.models import Q
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 
@@ -10,8 +11,14 @@ from .forms import PostForm, CommentForm
 # Create your views here.
 class PostsListView(View):
 	def get(self, request, *args, **kwargs):
-		posts = Post.objects.all()
-		return render(request, 'blog/posts-list.html', {'posts':posts})
+		filter_keyword = request.GET.get('filter_keyword')
+		searching = None
+		if filter_keyword:
+			posts = Post.objects.filter(Q(title__icontains=filter_keyword)|Q(content__icontains=filter_keyword))
+			searching = True
+		else:
+			posts = Post.objects.all()
+		return render(request, 'blog/posts-list.html', {'posts':posts, 'searching':searching})
 
 
 
