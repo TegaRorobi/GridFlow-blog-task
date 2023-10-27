@@ -42,26 +42,25 @@ class LoginView(View):
 		if form.is_valid():
 			username = form.cleaned_data.get('username')
 			password = form.cleaned_data.get('password')
-			print(f"username {username} password {password}")
 
 			user = authenticate(request, username=username, password=password)
 			if user is not None:
-				print('USER IS VALID, LLGGING IN...')
 				login(request, user)
 				return redirect(reverse('blog:posts-list'))
-			print('ADDING ERRORS TO THE FORM')
 			form.add_error(None, "Invalid username or password")
+			return render(request, 'blog/login.html', {'form':form})
 
-		print('RENDERING THEE LOGIN FORM AFTER POSTT')
 		return render(request, 'blog/login.html', {'form':form})
 
 
 
-class LogoutView(View):
+class LogoutView(_LoginRequiredMixin, View):
 	def get(self, request, *args, **kwargs):
+		return render(request, 'blog/logout.html', {})
+
+	def post(self, request, *args, **kwargs):
 		logout(request)
 		return redirect(reverse('login'))
-
 
 
 
