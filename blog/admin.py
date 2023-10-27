@@ -11,7 +11,7 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
 	model = Comment 
-	list_display = 'user', 'blog', '_content', 'created_at', 'updated_at'
+	list_display = 'user', 'post', '_content', 'created_at', 'updated_at'
 
 	@admin.display()
 	def _content(self, obj):

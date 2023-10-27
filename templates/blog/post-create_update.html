@@ -1,21 +1,24 @@
 {% extends 'base.html' %}
 
-
-{% if create %}
-	{% block title %} Create a new blog post 🚀 {% endblock %}
-{% else %}
-	{% block title %} Update an existing blog post 👴 {% endblock %}
-{% endif %}
+{% block title %}
+	{% if create %}
+		 Create a new blog post 🚀
+	{% else %}
+		Update an existing blog post 👴 
+	{% endif %}
+{% endblock %}
 
 
 {% block content %}
 
 <div class='container p-4'>
 	{% if create %}
-		<h2>Create a new blog post 🚀</h2>
+		<h1>Create a Post 🚀</h1>
 	{% else %}
-		<h2>Update an existing blog post 👴</h2>
+		<h1>Update an existing Post 👴</h1>
 	{% endif %}
+	<hr>
+
 	<form class='form' method="POST">
 		{% csrf_token %}
 		{% for field in form %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %} Post detail {% endblock %}
+
+{% block content %}
+<div class='container p-4'>
+	<h3>Title: {{post.title}}</h3>
+	<hr>
+
+	<p>{{post.content}}</p>
+	<p>
+		Created on {{post.created_at}}
+		<br>
+		Updated {{post.updated_at|timesince}} ago
+	</p>
+
+	<br>
+
+	<div class="pl-4">
+		<h5>Comments</h5>
+		<ul>
+		{% for comment in post.comments.all %}
+			<div>
+				<li><p>
+					{{comment.content}} | <small> {{comment.user.username}}, {{comment.updated_at|timesince}} ago </small>
+				</p></li>
+			</div>
+		{% endfor %}
+		</ul>
+	</div>
+
+	<h5>Add a comment</h5>
+		<form class='form' method='POST'>
+			{% csrf_token %}
+			{% for field in form %}
+				<div class="form__group">
+					<label>{{field.label}}</label>
+					<br/>
+					{{field}}
+					<br/></br/>
+				</div>
+			{% endfor %}
+			<button class='btn btn-info' type='submit'>Post Comment</button>
+		</form>
+	
+	<a style='float:right;' class='btn btn-outline-danger m-4' href="{% url 'blog:post-delete' pk=post.pk%}">Delete Post</a>
+</div>
+
+{% endblock %}
