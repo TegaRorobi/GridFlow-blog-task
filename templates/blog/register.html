@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %} Register {% endblock %}
+
+{% block content %}
+<div class='container p-4'>
+	<h3>Create a new user account 🎉🎊</h3>
+	<hr>
+
+	
+	<form class='form' method='POST'>
+		{% csrf_token %}
+		{% for field in form %}
+			<div class="form__group">
+				<label>{{field.label}}</label>
+				<br/>
+				{{field}}
+				{{field.errors}}
+				<br/></br/>
+			</div>
+		{% endfor %}
+		<button class='btn btn-info' type='submit'>Register</button>
+	</form>
+
+	<p>Already have an account? Login <a href="{% url 'login' %}">here</a>.</p>
+	
+	
+</div>
+
+{% endblock %}
