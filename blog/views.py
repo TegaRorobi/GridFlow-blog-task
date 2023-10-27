@@ -36,9 +36,9 @@ class PostCreateUpdateView(View):
 			form = PostForm(request.POST, instance=post)
 
 		if form.is_valid:
-			form.save()
+			ins = form.save()
 			messages.success(request, "Action Successful.")
-			return redirect(reverse('blog:posts-list'))
+			return redirect(reverse('blog:post-retrieve', kwargs={'pk':ins.pk}))
 		messages.error(request, 'Invalid input.')
 		return self.get(request, *args, **kwargs)
 

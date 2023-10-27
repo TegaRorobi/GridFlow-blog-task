@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -11,6 +12,9 @@ class Post(models.Model):
 	# timestamps
 	created_at = models.DateTimeField(auto_now=True)
 	updated_at = models.DateTimeField(auto_now_add=True)
+
+	def get_absolute_url(self):
+		return reverse('blog:post-retrieve', kwargs={'pk':self.pk})
 
 	def __str__(self):
 		return self.title 

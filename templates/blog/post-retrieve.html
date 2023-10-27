@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class='container p-4'>
-	<h3>Title: {{post.title}}</h3>
+	<h3>{{post.title}}</h3>
 	<hr>
 
 	<p>{{post.content}}</p>
@@ -44,6 +44,7 @@
 		</form>
 	
 	<a style='float:right;' class='btn btn-outline-danger m-4' href="{% url 'blog:post-delete' pk=post.pk%}">Delete Post</a>
+	<a style='float:right;' class='btn btn-outline-warning m-4' href="{% url 'blog:post-update' pk=post.pk%}">Update Post</a>
 </div>
 
 {% endblock %}
