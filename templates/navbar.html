@@ -1,6 +1,6 @@
 <nav style='border-radius: 12.5px;' class="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme='dark'>
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">&nbsp;&nbsp;&nbsp;BLOG.dev&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+    <a class="navbar-brand" href="{% url 'blog:posts-list' %}">&nbsp;&nbsp;&nbsp;BLOG.dev&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -26,6 +26,10 @@
         {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link disabled" aria-disabled="true">Logged in as {{request.user.username}}</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true">Logged out</a>
           </li>
         {% endif %}
       </ul>

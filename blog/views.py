@@ -1,22 +1,22 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login, authenticate, logout
+from django.core.paginator import Paginator
 from django.views.generic import View
 from django.urls import reverse
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Count
 from .models import Post, Comment
 from .forms import RegisterForm, LoginForm, PostForm, CommentForm
 
 
-
-# Create your views here.
 class _LoginRequiredMixin(LoginRequiredMixin):
 	login_url = '/accounts/login/'
 
 
 
 class RegisterView(View):
+
 	def get(self, request, *args, **kwargs):
 		form = RegisterForm()
 		return render(request, 'blog/register.html', {'form':form})
@@ -28,43 +28,39 @@ class RegisterView(View):
 			messages.success(request, "Action Successful.")
 			return redirect(reverse('blog:posts-list'))
 		messages.error(request, 'Invalid input.')
-		return self.get(request, *args, **kwargs)
+		return render(request, 'blog/register.html', {'form':form})
 
 
 
 class LoginView(View):
+
 	def get(self, request, *args, **kwargs):
 		form = LoginForm()
 		return render(request, 'blog/login.html', {'form':form})
 
 	def post(self, request, *args, **kwargs):
-		form = LoginForm(request.POST)
+		form = LoginForm(request, data=request.POST)
 		if form.is_valid():
-			username = form.cleaned_data.get('username')
-			password = form.cleaned_data.get('password')
-
-			user = authenticate(request, username=username, password=password)
-			if user is not None:
-				login(request, user)
-				return redirect(reverse('blog:posts-list'))
-			form.add_error(None, "Invalid username or password")
-			return render(request, 'blog/login.html', {'form':form})
-
+			user = form.get_user()
+			login(request, user)
+			return redirect(reverse('blog:posts-list'))
 		return render(request, 'blog/login.html', {'form':form})
 
 
 
 class LogoutView(_LoginRequiredMixin, View):
+
 	def get(self, request, *args, **kwargs):
 		return render(request, 'blog/logout.html', {})
 
 	def post(self, request, *args, **kwargs):
 		logout(request)
-		return redirect(reverse('login'))
+		return redirect(reverse('blog:posts-list'))
 
 
 
-class PostsListView(_LoginRequiredMixin, View):
+class PostsListView(View):
+
 	def get(self, request, *args, **kwargs):
 		filter_keyword = request.GET.get('filter_keyword')
 		searching = None
@@ -78,6 +74,7 @@ class PostsListView(_LoginRequiredMixin, View):
 
 
 class PostCreateUpdateView(_LoginRequiredMixin, View):
+
 	def get(self, request, *args, **kwargs):
 		create = 'pk' not in kwargs
 		if create:
@@ -109,11 +106,26 @@ class PostCreateUpdateView(_LoginRequiredMixin, View):
 
 
 
-class PostRetrieveView(_LoginRequiredMixin, View):
+class PostRetrieveView(View):
+
 	def get(self, request, *args, **kwargs):
 		post = get_object_or_404(Post, pk=kwargs.get('pk'))
 		form = CommentForm()
-		return render(request, 'blog/post-retrieve.html', {'post':post, 'form':form})
+
+		queryset = post.comments.all()
+		page_size = request.GET.get('page_size', 10)
+
+		# if the comments aren't even up to the page size, then there's no need to set up a paginator
+		# we can also get this information without making another query to the database hence the aggregation.
+		if queryset.aggregate(_total_count=Count('*'))['_total_count'] < page_size:
+			return render(request, 'blog/post-retrieve.html', {'post':post, 'post_comments':queryset, 'form':form})
+
+		paginator = Paginator(queryset, page_size)
+		page_number = max(1, min(int(request.GET.get('page', 1)), paginator.num_pages))
+
+		post_comments = paginator.page(page_number)
+		return render(request, 'blog/post-retrieve.html', {'post':post, 'post_comments':post_comments, 'paginator':paginator, 'form':form})
+		
 
 	def post(self, request, *args, **kwargs):
 		post = get_object_or_404(Post, pk=kwargs.get('pk'))

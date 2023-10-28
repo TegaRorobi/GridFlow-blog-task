@@ -7,7 +7,6 @@
 	<h3>Create a new user account 🎉🎊</h3>
 	<hr>
 
-	
 	<form class='form' method='POST'>
 		{% csrf_token %}
 		{% for field in form %}
@@ -19,6 +18,7 @@
 				<br/></br/>
 			</div>
 		{% endfor %}
+		{{form.non_field_errors}}
 		<button class='btn btn-info' type='submit'>Register</button>
 	</form>
 

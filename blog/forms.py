@@ -1,6 +1,6 @@
 from django import forms 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Post, Comment
 
 User = get_user_model()
@@ -11,9 +11,9 @@ class RegisterForm(UserCreationForm):
 		fields = 'username', 'password1', 'password2'
 
 
-class LoginForm(forms.Form):
-	username = forms.CharField(max_length=150)
-	password = forms.CharField(widget=forms.PasswordInput)
+class LoginForm(AuthenticationForm):
+	pass
+	
 
 
 class PostForm(forms.ModelForm):

@@ -19,7 +19,7 @@
 	<div class="pl-4">
 		<h5>Comments</h5>
 		<ul>
-		{% for comment in post.comments.all %}
+		{% for comment in post_comments %}
 			<div>
 				<li><p>
 					{{comment.content}} | <small> {{comment.user.username}}, {{comment.updated_at|timesince}} ago </small>
@@ -29,7 +29,18 @@
 		</ul>
 	</div>
 
-	<h5>Add a comment</h5>
+	{% if post_comments.has_previous %}
+        <a href="?page=1">&lt;&lt;</a>&nbsp;&nbsp;&nbsp;
+        <a href="?page={{post_comments.previous_page_number}}">Previous comments</a>&nbsp;&nbsp;&nbsp;
+    {% endif %}
+
+    {% if post_comments.has_next %}
+        <a href="?page={{post_comments.next_page_number}}">More comments</a> &nbsp;&nbsp;&nbsp;
+      	<a href="?page={{paginator.num_pages}}">&gt;&gt;</a>
+    {% endif %}
+
+	{% if request.user.is_authenticated %}
+		<h5>Add a comment</h5>
 		<form class='form' method='POST'>
 			{% csrf_token %}
 			{% for field in form %}
@@ -42,9 +53,13 @@
 			{% endfor %}
 			<button class='btn btn-info' type='submit'>Post Comment</button>
 		</form>
+	{% else %}
+		<h6> Kindly Login <a href="{% url 'login' %}">here</a> to comment on this post.</h6>
+	{% endif %}
+
 	{% if post.author == request.user %}
-	<a style='float:right;' class='btn btn-outline-danger m-4' href="{% url 'blog:post-delete' pk=post.pk%}">Delete Post</a>
-	<a style='float:right;' class='btn btn-outline-warning m-4' href="{% url 'blog:post-update' pk=post.pk%}">Update Post</a>
+		<a style='float:right;' class='btn btn-outline-danger m-4' href="{% url 'blog:post-delete' pk=post.pk%}">Delete Post</a>
+		<a style='float:right;' class='btn btn-outline-warning m-4' href="{% url 'blog:post-update' pk=post.pk%}">Update Post</a>
 	{% endif %}
 </div>
 
