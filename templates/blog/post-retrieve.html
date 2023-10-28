@@ -9,7 +9,7 @@
 
 	<p>{{post.content}}</p>
 	<p>
-		Created on {{post.created_at}}
+		Created on {{post.created_at}} by {{post.author.username}}
 		<br>
 		Updated {{post.updated_at|timesince}} ago
 	</p>
@@ -42,9 +42,10 @@
 			{% endfor %}
 			<button class='btn btn-info' type='submit'>Post Comment</button>
 		</form>
-	
+	{% if post.author == request.user %}
 	<a style='float:right;' class='btn btn-outline-danger m-4' href="{% url 'blog:post-delete' pk=post.pk%}">Delete Post</a>
 	<a style='float:right;' class='btn btn-outline-warning m-4' href="{% url 'blog:post-update' pk=post.pk%}">Update Post</a>
+	{% endif %}
 </div>
 
 {% endblock %}

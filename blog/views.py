@@ -98,7 +98,10 @@ class PostCreateUpdateView(_LoginRequiredMixin, View):
 			form = PostForm(request.POST, instance=post)
 
 		if form.is_valid:
-			ins = form.save()
+			ins = form.save(commit=False)
+			if create:
+				ins.author = request.user 
+				ins.save()
 			messages.success(request, "Action Successful.")
 			return redirect(reverse('blog:post-retrieve', kwargs={'pk':ins.pk}))
 		messages.error(request, 'Invalid input.')
