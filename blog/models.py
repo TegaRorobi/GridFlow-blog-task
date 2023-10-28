@@ -11,8 +11,8 @@ class Post(models.Model):
 	content = models.TextField()
 
 	# timestamps
-	created_at = models.DateTimeField(auto_now=True)
-	updated_at = models.DateTimeField(auto_now_add=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
 	def get_absolute_url(self):
 		return reverse('blog:post-retrieve', kwargs={'pk':self.pk})
@@ -28,8 +28,8 @@ class Comment(models.Model):
 	content = models.TextField()
 
 	# timestamps
-	created_at = models.DateTimeField(auto_now=True)
-	updated_at = models.DateTimeField(auto_now_add=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		content = self.content

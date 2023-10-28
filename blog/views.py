@@ -26,7 +26,7 @@ class RegisterView(View):
 		if form.is_valid():
 			form.save()
 			messages.success(request, "Action Successful.")
-			return redirect(reverse('blog:posts-list'))
+			return redirect(reverse('login'))
 		messages.error(request, 'Invalid input.')
 		return render(request, 'blog/register.html', {'form':form})
 
@@ -65,10 +65,10 @@ class PostsListView(View):
 		filter_keyword = request.GET.get('filter_keyword')
 		searching = None
 		if filter_keyword:
-			posts = Post.objects.filter(Q(title__icontains=filter_keyword)|Q(content__icontains=filter_keyword))
+			posts = Post.objects.filter(Q(title__icontains=filter_keyword)|Q(content__icontains=filter_keyword)).order_by('-updated_at')
 			searching = True
 		else:
-			posts = Post.objects.all()
+			posts = Post.objects.order_by('-updated_at')
 
 		try:
 			page_size = int(request.GET.get('page_size', 10))
@@ -115,7 +115,7 @@ class PostCreateUpdateView(_LoginRequiredMixin, View):
 			ins = form.save(commit=False)
 			if create:
 				ins.author = request.user 
-				ins.save()
+			ins.save()
 			messages.success(request, "Action Successful.")
 			return redirect(reverse('blog:post-retrieve', kwargs={'pk':ins.pk}))
 		messages.error(request, 'Invalid input.')
@@ -129,7 +129,7 @@ class PostRetrieveView(View):
 		post = get_object_or_404(Post, pk=kwargs.get('pk'))
 		form = CommentForm()
 
-		queryset = post.comments.all()
+		queryset = post.comments.order_by('-created_at')
 		try:
 			page_size = int(request.GET.get('page_size', 5))
 		except:

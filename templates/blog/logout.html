@@ -4,11 +4,11 @@
 
 {% block content %}
 <div class='container p-4 m-4'>
-	<h2 class='pt-4 mt-4'>⚠ Are you sure you want to Logout?🛑</h2>
+	<h2 class='pt-4 mt-4'>⚠ Are you sure you want to Logout?🛑</h2><br><br>
 	
 	<form method="POST">
 		{% csrf_token %}
-		<a class='btn btn-outline-info' href="{{request.META.HTTP_REFERER}}">Go Back</a>
+		<a class='btn btn-info' href="{{request.META.HTTP_REFERER}}">Go Back</a> &nbsp;&nbsp;
 		<button type=submit class='btn btn-danger'>Yes, I'm sure</button>
 	</form>
 </div>
