@@ -8,7 +8,7 @@ from .views import (
 
 app_name = 'blog'
 urlpatterns = [
-	re_path('^list[-_]?(posts)?/?$', PostsListView.as_view(), name='posts-list'),
+	re_path('^(list[-_]?(posts)?/?)?/?$', PostsListView.as_view(), name='posts-list'),
 	re_path('^create[-_]?(post)?/?$', PostCreateUpdateView.as_view(), name='post-create'),
 	re_path('^update[-_]?(post)?/(?P<pk>\d+)/?$', PostCreateUpdateView.as_view(), name='post-update'),
 	re_path('^retrieve[-_]?(post)?/(?P<pk>\d+)/?$', PostRetrieveView.as_view(), name='post-retrieve'),
