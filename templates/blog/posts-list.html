@@ -15,6 +15,16 @@
 			<li><a href="{{post.get_absolute_url}}">{{post.title}}</a></li>
 		{% endfor %}
 	</ul>
+
+	{% if posts.has_previous %}
+	    <a href="?page=1">&lt;&lt;</a>&nbsp;&nbsp;&nbsp;
+	    <a href="?page={{posts.previous_page_number}}">Previous posts</a>&nbsp;&nbsp;&nbsp;
+	{% endif %}
+
+	{% if posts.has_next %}
+	    <a href="?page={{posts.next_page_number}}">More posts</a> &nbsp;&nbsp;&nbsp;
+	  	<a href="?page={{paginator.num_pages}}">&gt;&gt;</a>
+	{% endif %}
 </div>
 
 {% endblock %}

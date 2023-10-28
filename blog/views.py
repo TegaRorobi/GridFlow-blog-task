@@ -69,7 +69,24 @@ class PostsListView(View):
 			searching = True
 		else:
 			posts = Post.objects.all()
-		return render(request, 'blog/posts-list.html', {'posts':posts, 'searching':searching})
+
+		try:
+			page_size = int(request.GET.get('page_size', 10))
+		except:
+			page_size=10
+
+		paginator = Paginator(posts, page_size)
+
+		try:
+			page_number = int(request.GET.get('page', 1))
+		except:
+			page_number = 1
+
+		page_number = max(1, min(page_number, paginator.num_pages))
+
+		posts = paginator.page(page_number)
+
+		return render(request, 'blog/posts-list.html', {'posts':posts, 'paginator':paginator, 'searching':searching})
 
 
 
@@ -113,7 +130,10 @@ class PostRetrieveView(View):
 		form = CommentForm()
 
 		queryset = post.comments.all()
-		page_size = request.GET.get('page_size', 10)
+		try:
+			page_size = int(request.GET.get('page_size', 5))
+		except:
+			page_size=5
 
 		# if the comments aren't even up to the page size, then there's no need to set up a paginator
 		# we can also get this information without making another query to the database hence the aggregation.
@@ -121,7 +141,11 @@ class PostRetrieveView(View):
 			return render(request, 'blog/post-retrieve.html', {'post':post, 'post_comments':queryset, 'form':form})
 
 		paginator = Paginator(queryset, page_size)
-		page_number = max(1, min(int(request.GET.get('page', 1)), paginator.num_pages))
+		try:
+			page_number = int(request.GET.get('page', 1))
+		except:
+			page_number = 1
+		page_number = max(1, min(page_number, paginator.num_pages))
 
 		post_comments = paginator.page(page_number)
 		return render(request, 'blog/post-retrieve.html', {'post':post, 'post_comments':post_comments, 'paginator':paginator, 'form':form})
